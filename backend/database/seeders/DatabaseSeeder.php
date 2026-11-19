@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             CountryAndJurisdictionSeeder::class,
             VesselAndCorporateSeeder::class,
             InvestigationAndEvidenceSeeder::class,
+            Phase3IntelligenceSeeder::class,
         ]);
     }
 }

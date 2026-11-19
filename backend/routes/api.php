@@ -3,10 +3,14 @@
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CorporateController;
 use App\Http\Controllers\Api\v1\CountryController;
+use App\Http\Controllers\Api\v1\CrewController;
 use App\Http\Controllers\Api\v1\DataSourceController;
 use App\Http\Controllers\Api\v1\EvidenceController;
+use App\Http\Controllers\Api\v1\GisResearchMapController;
 use App\Http\Controllers\Api\v1\InvestigationCaseController;
+use App\Http\Controllers\Api\v1\IuuController;
 use App\Http\Controllers\Api\v1\MaritimeJurisdictionController;
+use App\Http\Controllers\Api\v1\PersonController;
 use App\Http\Controllers\Api\v1\VerificationController;
 use App\Http\Controllers\Api\v1\VesselController;
 use App\Http\Controllers\Api\v1\VesselIdentityController;
@@ -129,7 +133,46 @@ Route::prefix('v1')->group(function () {
             Route::put('/{id}', [DataSourceController::class, 'update']);
         });
 
-        // 10. Audit Trail
+        // 10. Persons Intelligence (Phase 3)
+        Route::prefix('persons')->group(function () {
+            Route::get('/', [PersonController::class, 'index']);
+            Route::post('/', [PersonController::class, 'store']);
+            Route::get('/{id}', [PersonController::class, 'show']);
+            Route::put('/{id}', [PersonController::class, 'update']);
+            Route::post('/{id}/aliases', [PersonController::class, 'addAlias']);
+            Route::post('/{id}/corporate-ties', [PersonController::class, 'addCorporateTie']);
+            Route::post('/{id}/vessel-ties', [PersonController::class, 'addVesselTie']);
+        });
+
+        // 11. Crew Intelligence & Forced Labour (Phase 3)
+        Route::prefix('crew')->group(function () {
+            Route::get('/agents', [CrewController::class, 'manningAgents']);
+            Route::post('/agents', [CrewController::class, 'storeManningAgent']);
+            Route::get('/employments', [CrewController::class, 'employments']);
+            Route::post('/employments', [CrewController::class, 'storeEmployment']);
+            Route::get('/labour-violations', [CrewController::class, 'labourViolations']);
+            Route::post('/labour-violations', [CrewController::class, 'storeLabourViolation']);
+        });
+
+        // 12. IUU Intelligence & RFMO Sanctions (Phase 3)
+        Route::prefix('iuu')->group(function () {
+            Route::get('/listings', [IuuController::class, 'listings']);
+            Route::post('/listings', [IuuController::class, 'storeListing']);
+            Route::get('/infractions', [IuuController::class, 'infractions']);
+            Route::post('/infractions', [IuuController::class, 'storeInfraction']);
+        });
+
+        // 13. GIS & Research Spatial Map (Phase 3)
+        Route::prefix('gis')->group(function () {
+            Route::get('/layers', [GisResearchMapController::class, 'getMapLayers']);
+            Route::get('/polygons', [GisResearchMapController::class, 'polygons']);
+            Route::post('/polygons', [GisResearchMapController::class, 'storePolygon']);
+            Route::get('/events', [GisResearchMapController::class, 'spatialEvents']);
+            Route::post('/events', [GisResearchMapController::class, 'storeSpatialEvent']);
+            Route::post('/query', [GisResearchMapController::class, 'spatialQuery']);
+        });
+
+        // 14. Audit Trail
         Route::get('/audit-logs', function (Request $request) {
             $user = $request->user();
             if (!in_array($user->role->value, ['super_admin', 'research_director'])) {

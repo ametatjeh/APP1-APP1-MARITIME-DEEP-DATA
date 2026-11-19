@@ -19,6 +19,10 @@ import EvidenceDetailView from '@/views/EvidenceDetailView.vue';
 import DataSourcesView from '@/views/DataSourcesView.vue';
 import VerificationWorkspaceView from '@/views/VerificationWorkspaceView.vue';
 import ChainOfCustodyView from '@/views/ChainOfCustodyView.vue';
+import PersonsView from '@/views/PersonsView.vue';
+import CrewIntelligenceView from '@/views/CrewIntelligenceView.vue';
+import IuuIntelligenceView from '@/views/IuuIntelligenceView.vue';
+import GisResearchMapView from '@/views/GisResearchMapView.vue';
 import GenericPhaseView from '@/views/GenericPhaseView.vue';
 
 const router = createRouter({
@@ -54,11 +58,13 @@ const router = createRouter({
         { path: 'verification', name: 'verification', component: VerificationWorkspaceView, meta: { title: 'Verification Queue', icon: 'CheckCircle' } },
         { path: 'chain-of-custody', name: 'chain-of-custody', component: ChainOfCustodyView, meta: { title: 'Forensic Chain of Custody', icon: 'FileText' } },
 
-        // Modules scheduled for Phase 3-6 (Displayed with clear NGO status badge and Phase tag)
-        { path: 'persons', name: 'persons', component: GenericPhaseView, props: { title: 'Persons Intelligence', phase: 3, description: 'Encrypted person profiles, intelligence links, and corporate ties.' } },
-        { path: 'crew', name: 'crew', component: GenericPhaseView, props: { title: 'Crew Intelligence', phase: 3, description: 'Crew lists, sea employment history, skipper track records, and labour compliance.' } },
-        { path: 'iuu', name: 'iuu', component: GenericPhaseView, props: { title: 'IUU Intelligence', phase: 3, description: 'Official RFMO lists, illegal fishing sanctions, and unverified allegations.' } },
-        { path: 'gis-map', name: 'gis-map', component: GenericPhaseView, props: { title: 'GIS Research Map', phase: 3, description: 'Multi-layer spatial analytics, boundary overlays, and research polygons.' } },
+        // Phase 3: Active Intelligence & Spatial Modules
+        { path: 'persons', name: 'persons', component: PersonsView, meta: { title: 'Persons Intelligence', icon: 'Users' } },
+        { path: 'crew', name: 'crew', component: CrewIntelligenceView, meta: { title: 'Crew Intelligence & Forced Labour', icon: 'Anchor' } },
+        { path: 'iuu', name: 'iuu', component: IuuIntelligenceView, meta: { title: 'IUU Intelligence & Sanctions', icon: 'AlertTriangle' } },
+        { path: 'gis-map', name: 'gis-map', component: GisResearchMapView, meta: { title: 'GIS Research Map', icon: 'Map' } },
+
+        // Modules scheduled for Phase 4-6 (Displayed with clear NGO status badge and Phase tag)
         { path: 'watchlists', name: 'watchlists', component: GenericPhaseView, props: { title: 'Watchlists & Alerts', phase: 5, description: 'Automated monitoring of target vessels, corporations, and beneficial owners.' } },
         { path: 'reports', name: 'reports', component: GenericPhaseView, props: { title: 'Reports & Export', phase: 5, description: 'Evidence-linked dossier compilation, PDF export, and court-ready documentation.' } },
         { path: 'ai-assistant', name: 'ai-assistant', component: GenericPhaseView, props: { title: 'AI Research Assistant', phase: 6, description: 'Multi-Agent research orchestration, vector search, and RAG synthesis with strict evidence citations.' } },

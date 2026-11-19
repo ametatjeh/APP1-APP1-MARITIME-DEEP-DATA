@@ -137,7 +137,7 @@
             {{ $route.meta.title || 'Intelligence Workspace' }}
           </h2>
           <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-950 border border-cyan-800/80 text-cyan-300">
-            PHASE 2 ACTIVE
+            PHASE 3 ACTIVE
           </span>
         </div>
 
@@ -173,15 +173,15 @@ const group1 = [
   { path: '/vessels', label: '2. Vessels Master', icon: '🚢' },
   { path: '/vessel-identity', label: '3. Vessel Identity', icon: '🔍', badge: 'Alerts' },
   { path: '/corporate', label: '4. Corporate Intel', icon: '🏢' },
-  { path: '/persons', label: '5. Persons', icon: '👤', phase: 3 },
-  { path: '/crew', label: '6. Crew Intelligence', icon: '⚓', phase: 3 },
+  { path: '/persons', label: '5. Persons & UBOs', icon: '👤', badge: 'Encrypted' },
+  { path: '/crew', label: '6. Crew Intelligence', icon: '⚓', badge: 'ILO 11' },
 ];
 
 const group2 = [
   { path: '/countries', label: '7. Countries', icon: '🌐' },
   { path: '/jurisdictions', label: '8. Maritime Jurisdiction', icon: '🗺️' },
   { path: '/eez-explorer', label: '9. EEZ Explorer', icon: '🧭', badge: 'PostGIS' },
-  { path: '/gis-map', label: '13. GIS Research Map', icon: '📍', phase: 3 },
+  { path: '/gis-map', label: '13. GIS Research Map', icon: '📍', badge: 'Layers' },
 ];
 
 const group3 = [
@@ -189,7 +189,7 @@ const group3 = [
   { path: '/evidence', label: '11. Evidence Vault', icon: '🛡️', badge: 'SHA-256' },
   { path: '/verification', label: '11b. Verification Queue', icon: '⚖️', badge: 'Review' },
   { path: '/chain-of-custody', label: '11c. Chain of Custody', icon: '📜' },
-  { path: '/iuu', label: '12. IUU Intelligence', icon: '🚨', phase: 3 },
+  { path: '/iuu', label: '12. IUU Intelligence', icon: '🚨', badge: 'RFMO' },
   { path: '/watchlists', label: '15. Watchlists', icon: '👁️', phase: 5 },
   { path: '/reports', label: '17. Reports & Export', icon: '📑', phase: 5 },
 ];

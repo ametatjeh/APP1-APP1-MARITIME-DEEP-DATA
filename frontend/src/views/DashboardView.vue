@@ -16,59 +16,77 @@
     </div>
 
     <!-- Quick Stats Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-      <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+      <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
         <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
           <span>Vessels</span>
           <span>🚢</span>
         </div>
         <div class="text-xl font-bold text-white">{{ stats.vessels }}</div>
-        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">Master Database</div>
+        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">Master DB</div>
       </div>
 
-      <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+      <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
         <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
           <span>Companies</span>
           <span>🏢</span>
         </div>
         <div class="text-xl font-bold text-white">{{ stats.companies }}</div>
-        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">UBOs & Operators</div>
+        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">Corporate</div>
       </div>
 
-      <div class="p-3.5 rounded-xl bg-slate-900 border border-cyan-800/60 bg-cyan-950/20">
+      <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+        <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+          <span>Persons</span>
+          <span>👤</span>
+        </div>
+        <div class="text-xl font-bold text-cyan-300">{{ stats.persons }}</div>
+        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">UBOs & Skippers</div>
+      </div>
+
+      <div class="p-3 rounded-xl bg-slate-900 border border-cyan-800/60 bg-cyan-950/20">
         <div class="flex items-center justify-between text-cyan-300 text-xs mb-1">
           <span>Active Cases</span>
           <span>📂</span>
         </div>
         <div class="text-xl font-bold text-cyan-300">{{ stats.cases }}</div>
-        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">Phase 2 Investigations</div>
+        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">Investigations</div>
       </div>
 
-      <div class="p-3.5 rounded-xl bg-slate-900 border border-emerald-800/60 bg-emerald-950/20">
+      <div class="p-3 rounded-xl bg-slate-900 border border-emerald-800/60 bg-emerald-950/20">
         <div class="flex items-center justify-between text-emerald-300 text-xs mb-1">
-          <span>Vault Evidence</span>
+          <span>Evidence Vault</span>
           <span>🛡️</span>
         </div>
         <div class="text-xl font-bold text-emerald-300">{{ stats.evidences }}</div>
-        <div class="text-[9px] text-emerald-400 mt-0.5 font-mono">SHA-256 Authenticated</div>
+        <div class="text-[9px] text-emerald-400 mt-0.5 font-mono">SHA-256 Valid</div>
       </div>
 
-      <div class="p-3.5 rounded-xl bg-slate-900 border border-purple-800/60 bg-purple-950/20">
+      <div class="p-3 rounded-xl bg-slate-900 border border-rose-800/60 bg-rose-950/20">
+        <div class="flex items-center justify-between text-rose-300 text-xs mb-1">
+          <span>IUU Listed</span>
+          <span>🚨</span>
+        </div>
+        <div class="text-xl font-bold text-rose-300">{{ stats.iuuListings }}</div>
+        <div class="text-[9px] text-rose-400 mt-0.5 font-mono">RFMO Sanctions</div>
+      </div>
+
+      <div class="p-3 rounded-xl bg-slate-900 border border-purple-800/60 bg-purple-950/20">
         <div class="flex items-center justify-between text-purple-300 text-xs mb-1">
           <span>Pending Reviews</span>
           <span>⚖️</span>
         </div>
         <div class="text-xl font-bold text-purple-300">{{ stats.pendingVerifications }}</div>
-        <div class="text-[9px] text-purple-400 mt-0.5 font-mono">Verification Queue</div>
+        <div class="text-[9px] text-purple-400 mt-0.5 font-mono">Verification</div>
       </div>
 
-      <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
-        <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
-          <span>Data Sources</span>
-          <span>📡</span>
+      <div class="p-3 rounded-xl bg-slate-900 border border-amber-800/60 bg-amber-950/20">
+        <div class="flex items-center justify-between text-amber-300 text-xs mb-1">
+          <span>Spatial Layers</span>
+          <span>📍</span>
         </div>
-        <div class="text-xl font-bold text-white">{{ stats.sources }}</div>
-        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">Provenance Registry</div>
+        <div class="text-xl font-bold text-amber-300">{{ stats.researchPolygons }}</div>
+        <div class="text-[9px] text-amber-400 mt-0.5 font-mono">AOIs & Events</div>
       </div>
     </div>
 
@@ -191,6 +209,10 @@ const stats = ref({
   evidences: 0,
   sources: 0,
   pendingVerifications: 0,
+  persons: 0,
+  crew: 0,
+  iuuListings: 0,
+  researchPolygons: 0,
 });
 
 const loading = ref(true);
@@ -203,7 +225,7 @@ const pointResult = ref<any>(null);
 async function loadDashboardData() {
   loading.value = true;
   try {
-    const [vesselsRes, companiesRes, conflictsRes, jurisdictionsRes, countriesRes, casesRes, evidencesRes, sourcesRes, queueRes] = await Promise.all([
+    const [vesselsRes, companiesRes, conflictsRes, jurisdictionsRes, countriesRes, casesRes, evidencesRes, sourcesRes, queueRes, personsRes, crewRes, iuuRes, polyRes] = await Promise.all([
       apiClient.get('/vessels?per_page=1').catch(() => ({ data: { total: 0 } })),
       apiClient.get('/companies?per_page=1').catch(() => ({ data: { total: 0 } })),
       apiClient.get('/identity/conflicts?per_page=5').catch(() => ({ data: { total: 0, data: [] } })),
@@ -213,6 +235,10 @@ async function loadDashboardData() {
       apiClient.get('/evidences?per_page=1').catch(() => ({ data: { total: 0 } })),
       apiClient.get('/sources?per_page=1').catch(() => ({ data: { total: 0 } })),
       apiClient.get('/verification/queue').catch(() => ({ data: { data: [] } })),
+      apiClient.get('/persons?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/crew/employments?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/iuu/listings?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/gis/polygons?per_page=1').catch(() => ({ data: { total: 0 } })),
     ]);
 
     stats.value = {
@@ -225,6 +251,10 @@ async function loadDashboardData() {
       evidences: evidencesRes.data.total ?? 0,
       sources: sourcesRes.data.total ?? 0,
       pendingVerifications: queueRes.data.data?.length ?? 0,
+      persons: personsRes.data.total ?? 0,
+      crew: crewRes.data.total ?? 0,
+      iuuListings: iuuRes.data.total ?? 0,
+      researchPolygons: polyRes.data.total ?? 0,
     };
 
     conflictsList.value = conflictsRes.data.data ?? [];
