@@ -26,6 +26,9 @@ import GisResearchMapView from '@/views/GisResearchMapView.vue';
 import ImportPipelinesView from '@/views/ImportPipelinesView.vue';
 import DatasetVersioningView from '@/views/DatasetVersioningView.vue';
 import DataValidationInspectorView from '@/views/DataValidationInspectorView.vue';
+import WatchlistsView from '@/views/WatchlistsView.vue';
+import ReportsView from '@/views/ReportsView.vue';
+import AdvancedSearchView from '@/views/AdvancedSearchView.vue';
 import GenericPhaseView from '@/views/GenericPhaseView.vue';
 
 const router = createRouter({
@@ -72,9 +75,12 @@ const router = createRouter({
         { path: 'datasets/versions', name: 'dataset-versions', component: DatasetVersioningView, meta: { title: 'Dataset Versions & Snapshots', icon: 'Layers' } },
         { path: 'validation-inspector', name: 'validation-inspector', component: DataValidationInspectorView, meta: { title: 'Data Validation Engine', icon: 'CheckSquare' } },
 
-        // Modules scheduled for Phase 4-6 (Displayed with clear NGO status badge and Phase tag)
-        { path: 'watchlists', name: 'watchlists', component: GenericPhaseView, props: { title: 'Watchlists & Alerts', phase: 5, description: 'Automated monitoring of target vessels, corporations, and beneficial owners.' } },
-        { path: 'reports', name: 'reports', component: GenericPhaseView, props: { title: 'Reports & Export', phase: 5, description: 'Evidence-linked dossier compilation, PDF export, and court-ready documentation.' } },
+        // Phase 5: Watchlists, Reports & Dossiers, Search & Network Graph
+        { path: 'watchlists', name: 'watchlists', component: WatchlistsView, meta: { title: 'Target Watchlists & Alerts', icon: 'Eye' } },
+        { path: 'reports', name: 'reports', component: ReportsView, meta: { title: 'Dossiers & Research Reports', icon: 'FileText' } },
+        { path: 'search', name: 'search', component: AdvancedSearchView, meta: { title: 'Advanced Intelligence Search', icon: 'Search' } },
+
+        // Modules scheduled for Phase 6
         { path: 'ai-assistant', name: 'ai-assistant', component: GenericPhaseView, props: { title: 'AI Research Assistant', phase: 6, description: 'Multi-Agent research orchestration, vector search, and RAG synthesis with strict evidence citations.' } },
         { path: 'users', name: 'users', component: GenericPhaseView, props: { title: 'User Management', phase: 1, description: 'Role-based access control (RBAC), country restrictions, and team assignment.' } },
         { path: 'audit-logs', name: 'audit-logs', component: GenericPhaseView, props: { title: 'Audit Trail', phase: 1, description: 'Immutable log of user actions, evidence access, and identity conflict resolutions.' } },

@@ -13,10 +13,14 @@ use App\Http\Controllers\Api\v1\GisResearchMapController;
 use App\Http\Controllers\Api\v1\InvestigationCaseController;
 use App\Http\Controllers\Api\v1\IuuController;
 use App\Http\Controllers\Api\v1\MaritimeJurisdictionController;
+use App\Http\Controllers\Api\v1\NetworkGraphController;
 use App\Http\Controllers\Api\v1\PersonController;
+use App\Http\Controllers\Api\v1\ReportController;
+use App\Http\Controllers\Api\v1\SearchController;
 use App\Http\Controllers\Api\v1\VerificationController;
 use App\Http\Controllers\Api\v1\VesselController;
 use App\Http\Controllers\Api\v1\VesselIdentityController;
+use App\Http\Controllers\Api\v1\WatchlistController;
 use App\Http\Middleware\EnsureRole;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
@@ -211,5 +215,33 @@ Route::prefix('v1')->group(function () {
             Route::post('/validate-identifier', [DataValidationController::class, 'validateIdentifier']);
             Route::post('/preview', [DataValidationController::class, 'preview']);
         });
+
+        // 18. Watchlists & Automated Alerts (Phase 5)
+        Route::prefix('watchlists')->group(function () {
+            Route::get('/', [WatchlistController::class, 'index']);
+            Route::post('/', [WatchlistController::class, 'store']);
+            Route::get('/alerts', [WatchlistController::class, 'alerts']);
+            Route::post('/alerts/{id}/acknowledge', [WatchlistController::class, 'acknowledgeAlert']);
+            Route::post('/alerts/{id}/resolve', [WatchlistController::class, 'resolveAlert']);
+            Route::get('/{id}', [WatchlistController::class, 'show']);
+            Route::put('/{id}', [WatchlistController::class, 'update']);
+            Route::post('/{id}/items', [WatchlistController::class, 'addItem']);
+            Route::delete('/{id}/items/{itemId}', [WatchlistController::class, 'removeItem']);
+        });
+
+        // 19. Research Reports & Dossier Generation (Phase 5)
+        Route::prefix('reports')->group(function () {
+            Route::get('/', [ReportController::class, 'index']);
+            Route::post('/vessels/{vesselId}/dossier', [ReportController::class, 'generateVesselDossier']);
+            Route::post('/companies/{companyId}/dossier', [ReportController::class, 'generateCorporateDossier']);
+            Route::get('/{id}', [ReportController::class, 'show']);
+            Route::get('/{id}/export', [ReportController::class, 'export']);
+        });
+
+        // 20. Advanced Cross-Domain Search (Phase 5)
+        Route::get('/search', [SearchController::class, 'search']);
+
+        // 21. Interactive Network Graph Canvas (Phase 5)
+        Route::get('/network/graph', [NetworkGraphController::class, 'getGraph']);
     });
 });

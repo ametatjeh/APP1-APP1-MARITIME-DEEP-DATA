@@ -74,7 +74,10 @@
             >
               <span>{{ item.icon }}</span>
               <span>{{ item.label }}</span>
-              <span v-if="item.phase" class="ml-auto text-[8px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">
+              <span v-if="item.badge" class="ml-auto text-[9px] px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-mono">
+                {{ item.badge }}
+              </span>
+              <span v-else-if="item.phase" class="ml-auto text-[8px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">
                 P{{ item.phase }}
               </span>
             </router-link>
@@ -96,7 +99,10 @@
             >
               <span>{{ item.icon }}</span>
               <span>{{ item.label }}</span>
-              <span v-if="item.phase" class="ml-auto text-[8px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">
+              <span v-if="item.badge" class="ml-auto text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">
+                {{ item.badge }}
+              </span>
+              <span v-else-if="item.phase" class="ml-auto text-[8px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">
                 P{{ item.phase }}
               </span>
             </router-link>
@@ -137,7 +143,7 @@
             {{ $route.meta.title || 'Intelligence Workspace' }}
           </h2>
           <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-950 border border-cyan-800/80 text-cyan-300">
-            PHASE 4 ACTIVE
+            PHASE 5 ACTIVE
           </span>
         </div>
 
@@ -167,8 +173,16 @@ import { useAuthStore } from '@/stores/auth';
 const router = useRouter();
 const authStore = useAuthStore();
 
+interface NavItem {
+  path: string;
+  label: string;
+  icon: string;
+  badge?: string;
+  phase?: number;
+}
+
 // 21 Navigation Menus strictly mapped
-const group1 = [
+const group1: NavItem[] = [
   { path: '/dashboard', label: '1. Dashboard', icon: '📊' },
   { path: '/vessels', label: '2. Vessels Master', icon: '🚢' },
   { path: '/vessel-identity', label: '3. Vessel Identity', icon: '🔍', badge: 'Alerts' },
@@ -177,27 +191,28 @@ const group1 = [
   { path: '/crew', label: '6. Crew Intelligence', icon: '⚓', badge: 'ILO 11' },
 ];
 
-const group2 = [
+const group2: NavItem[] = [
   { path: '/countries', label: '7. Countries', icon: '🌐' },
   { path: '/jurisdictions', label: '8. Maritime Jurisdiction', icon: '🗺️' },
   { path: '/eez-explorer', label: '9. EEZ Explorer', icon: '🧭', badge: 'PostGIS' },
   { path: '/gis-map', label: '13. GIS Research Map', icon: '📍', badge: 'Layers' },
 ];
 
-const group3 = [
+const group3: NavItem[] = [
   { path: '/investigations', label: '10. Investigation Cases', icon: '📂', badge: 'Active' },
   { path: '/evidence', label: '11. Evidence Vault', icon: '🛡️', badge: 'SHA-256' },
   { path: '/verification', label: '11b. Verification Queue', icon: '⚖️', badge: 'Review' },
   { path: '/chain-of-custody', label: '11c. Chain of Custody', icon: '📜' },
   { path: '/iuu', label: '12. IUU Intelligence', icon: '🚨', badge: 'RFMO' },
-  { path: '/watchlists', label: '15. Watchlists', icon: '👁️', phase: 5 },
-  { path: '/reports', label: '17. Reports & Export', icon: '📑', phase: 5 },
+  { path: '/watchlists', label: '15. Target Watchlists', icon: '👁️', badge: 'P5 Active' },
+  { path: '/reports', label: '17. Reports & Dossiers', icon: '📑', badge: 'Evidence' },
 ];
 
-const group4 = [
-  { path: '/network-graph', label: '16. Network Graph', icon: '🕸️' },
+const group4: NavItem[] = [
+  { path: '/network-graph', label: '16. Network Graph Canvas', icon: '🕸️', badge: 'Multi-Hop' },
+  { path: '/search', label: '20b. Global Intelligence Search', icon: '🔍', badge: 'Fuzzy' },
   { path: '/data-sources', label: '14. Data Sources', icon: '📡', badge: 'Registry' },
-  { path: '/imports', label: '14b. Ingestion Pipelines', icon: '📦', badge: 'P4 Active' },
+  { path: '/imports', label: '14b. Ingestion Pipelines', icon: '📦', badge: 'Staging' },
   { path: '/datasets/versions', label: '14c. Dataset Versions', icon: '🏷️', badge: 'SHA-256' },
   { path: '/validation-inspector', label: '14d. Validation Engine', icon: '🔬', badge: 'IMO/MID' },
   { path: '/ai-assistant', label: '18. AI Research Assistant', icon: '🤖', phase: 6 },

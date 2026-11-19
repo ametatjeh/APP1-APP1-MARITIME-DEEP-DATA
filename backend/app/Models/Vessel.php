@@ -103,6 +103,31 @@ class Vessel extends Model
         return $this->hasMany(VesselCompanyAssignment::class);
     }
 
+    public function personTies()
+    {
+        return $this->hasMany(PersonVesselTie::class);
+    }
+
+    public function crewEmployments()
+    {
+        return $this->hasMany(CrewEmployment::class);
+    }
+
+    public function labourViolations()
+    {
+        return $this->hasMany(LabourViolationReport::class);
+    }
+
+    public function iuuListings()
+    {
+        return $this->hasMany(IuuVesselListing::class);
+    }
+
+    public function iuuInfractions()
+    {
+        return $this->hasMany(IuuInfractionEvent::class);
+    }
+
     public function companies()
     {
         return $this->belongsToMany(Company::class, 'vessel_company_assignments')
