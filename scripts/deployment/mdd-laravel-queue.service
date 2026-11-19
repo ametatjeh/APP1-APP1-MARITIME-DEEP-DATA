@@ -1,0 +1,30 @@
+# ==============================================================================
+# Maritime Deep Data (App 1 Only) - Laravel Queue Worker Service
+# Place in: /etc/systemd/system/mdd-laravel-queue.service
+# Enable via: systemctl enable --now mdd-laravel-queue.service
+# ==============================================================================
+
+[Unit]
+Description=Maritime Deep Data Laravel Queue Worker
+After=network.target postgresql.service redis.service
+Requires=redis.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/maritime-deep-data/backend
+ExecStart=/usr/bin/php /var/www/maritime-deep-data/backend/artisan queue:work redis --sleep=3 --tries=3 --max-time=3600 --timeout=90
+Restart=always
+RestartSec=5
+StandardOutput=append:/var/log/maritime-deep-data/queue.log
+StandardError=append:/var/log/maritime-deep-data/queue_error.log
+
+# Security Sandboxing
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

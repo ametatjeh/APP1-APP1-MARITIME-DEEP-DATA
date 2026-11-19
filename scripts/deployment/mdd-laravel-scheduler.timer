@@ -1,0 +1,16 @@
+# ==============================================================================
+# Maritime Deep Data (App 1 Only) - Laravel Scheduler 1-Minute Timer
+# Place in: /etc/systemd/system/mdd-laravel-scheduler.timer
+# Enable via: systemctl enable --now mdd-laravel-scheduler.timer
+# ==============================================================================
+
+[Unit]
+Description=Run Maritime Deep Data Laravel Scheduler Every Minute
+
+[Timer]
+OnCalendar=*:*:00
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

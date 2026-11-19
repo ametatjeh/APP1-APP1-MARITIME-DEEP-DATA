@@ -15,10 +15,12 @@ use Illuminate\Support\Facades\Http;
 class AiVectorSearchService
 {
     protected string $aiServiceUrl;
+    protected ?string $aiServiceToken;
 
     public function __construct()
     {
         $this->aiServiceUrl = config('services.ai.url', 'http://127.0.0.1:8100');
+        $this->aiServiceToken = config('services.ai.token');
     }
 
     /**
@@ -28,7 +30,11 @@ class AiVectorSearchService
     public function generateEmbedding(string $text, int $dimension = 64): array
     {
         try {
-            $response = Http::connectTimeout(0.15)->timeout(0.5)->post("{$this->aiServiceUrl}/api/v1/embed", [
+            $req = Http::connectTimeout(0.15)->timeout(0.5);
+            if (!empty($this->aiServiceToken)) {
+                $req = $req->withHeaders(['X-Internal-Token' => $this->aiServiceToken]);
+            }
+            $response = $req->post("{$this->aiServiceUrl}/api/v1/embed", [
                 'text' => $text,
                 'dimension' => $dimension,
             ]);

@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\v1\DataValidationController;
 use App\Http\Controllers\Api\v1\DatasetVersionController;
 use App\Http\Controllers\Api\v1\EvidenceController;
 use App\Http\Controllers\Api\v1\GisResearchMapController;
+use App\Http\Controllers\Api\v1\HealthController;
 use App\Http\Controllers\Api\v1\InvestigationCaseController;
 use App\Http\Controllers\Api\v1\IuuController;
 use App\Http\Controllers\Api\v1\MaritimeJurisdictionController;
@@ -28,6 +29,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
+    // Infrastructure Health Check Endpoint (Public / Monitoring)
+    Route::get('/health', [HealthController::class, 'check']);
+
     // Public Authentication Endpoint
     Route::post('/auth/login', [AuthController::class, 'login']);
 

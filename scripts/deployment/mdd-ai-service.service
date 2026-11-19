@@ -1,0 +1,31 @@
+# ==============================================================================
+# Maritime Deep Data (App 1 Only) - Python FastAPI AI Microservice Service
+# Place in: /etc/systemd/system/mdd-ai-service.service
+# Enable via: systemctl enable --now mdd-ai-service.service
+# ==============================================================================
+
+[Unit]
+Description=Maritime Deep Data Python FastAPI Multi-Agent AI Microservice
+After=network.target
+
+[Service]
+Type=simple
+User=mdd-ai
+Group=mdd-ai
+WorkingDirectory=/var/www/maritime-deep-data
+Environment="PATH=/var/www/maritime-deep-data/ai_service/.venv/bin:/usr/local/bin:/usr/bin"
+EnvironmentFile=/var/www/maritime-deep-data/ai_service/.env
+ExecStart=/var/www/maritime-deep-data/ai_service/.venv/bin/uvicorn ai_service.main:app --host 127.0.0.1 --port 8100 --workers 2 --log-level info
+Restart=always
+RestartSec=5
+StandardOutput=append:/var/log/maritime-deep-data/ai_service.log
+StandardError=append:/var/log/maritime-deep-data/ai_service_error.log
+
+# Sandboxing: Internal loopback only, restricted permissions
+ProtectSystem=strict
+ProtectHome=true
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

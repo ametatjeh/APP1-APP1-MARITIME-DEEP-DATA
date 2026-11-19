@@ -20,11 +20,13 @@ use Illuminate\Support\Str;
 class AiAssistantService
 {
     protected string $aiServiceUrl;
+    protected ?string $aiServiceToken;
 
     public function __construct(
         protected AiVectorSearchService $vectorService
     ) {
         $this->aiServiceUrl = config('services.ai.url', 'http://127.0.0.1:8100');
+        $this->aiServiceToken = config('services.ai.token');
     }
 
     public function createConversation(array $data, User $user): AiConversation
@@ -203,7 +205,11 @@ class AiAssistantService
     protected function dispatchOrchestrator(string $prompt, array $context, string $agentMode): array
     {
         try {
-            $response = Http::connectTimeout(0.2)->timeout(1.5)->post("{$this->aiServiceUrl}/api/v1/orchestrate", [
+            $req = Http::connectTimeout(0.2)->timeout(1.5);
+            if (!empty($this->aiServiceToken)) {
+                $req = $req->withHeaders(['X-Internal-Token' => $this->aiServiceToken]);
+            }
+            $response = $req->post("{$this->aiServiceUrl}/api/v1/orchestrate", [
                 'prompt' => $prompt,
                 'context' => $context,
                 'agent_mode' => $agentMode,

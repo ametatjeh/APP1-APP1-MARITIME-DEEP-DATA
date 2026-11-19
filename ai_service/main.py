@@ -1,7 +1,8 @@
 import sys
 import os
+import time
 from typing import List, Dict, Any, Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -14,15 +15,31 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Production-configurable CORS allowlist (Internal network / Laravel API origin)
+allowed_origins_env = os.environ.get("AI_CORS_ORIGINS", "*")
+allowed_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins if allowed_origins else ["*"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
 orchestrator = OrchestratorAgent()
+
+def verify_internal_auth(x_internal_token: Optional[str] = Header(None, alias="X-Internal-Token")):
+    """
+    Verify internal shared token between Laravel Backend and FastAPI Microservice.
+    If AI_SERVICE_TOKEN is not configured (e.g., local tests), authentication passes.
+    In production, a mismatch immediately raises 401 Unauthorized.
+    """
+    expected_token = os.environ.get("AI_SERVICE_TOKEN")
+    if expected_token:
+        if not x_internal_token or x_internal_token != expected_token:
+            raise HTTPException(status_code=401, detail="Unauthorized: invalid or missing internal service token")
+    return True
 
 class OrchestrateRequest(BaseModel):
     prompt: str
@@ -47,15 +64,21 @@ class VectorSearchRequest(BaseModel):
 
 @app.get("/health")
 def health_check():
+    """
+    Service health check endpoint for monitoring, load balancers, and supervisor.
+    Does not expose sensitive credentials.
+    """
     return {
         "status": "healthy",
         "service": "Maritime Deep Data AI Service",
         "framework": "FastAPI",
         "python_version": sys.version.split()[0],
-        "multi_agent_enabled": True
+        "multi_agent_enabled": True,
+        "token_protection_enabled": bool(os.environ.get("AI_SERVICE_TOKEN")),
+        "timestamp": int(time.time()),
     }
 
-@app.get("/api/v1/agents")
+@app.get("/api/v1/agents", dependencies=[Depends(verify_internal_auth)])
 def list_agents():
     return {
         "orchestrator": "OrchestratorAgent",
@@ -71,7 +94,7 @@ def list_agents():
         ]
     }
 
-@app.post("/api/v1/orchestrate")
+@app.post("/api/v1/orchestrate", dependencies=[Depends(verify_internal_auth)])
 def orchestrate_query(req: OrchestrateRequest):
     try:
         result = orchestrator.process_query(
@@ -83,7 +106,7 @@ def orchestrate_query(req: OrchestrateRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/api/v1/embed")
+@app.post("/api/v1/embed", dependencies=[Depends(verify_internal_auth)])
 def embed_text(req: EmbedRequest):
     embedding = generate_embedding(req.text, dimension=req.dimension)
     return {
@@ -92,28 +115,24 @@ def embed_text(req: EmbedRequest):
         "embedding": embedding
     }
 
-@app.post("/api/v1/vector-search")
+@app.post("/api/v1/vector-search", dependencies=[Depends(verify_internal_auth)])
 def vector_search(req: VectorSearchRequest):
     query_vector = generate_embedding(req.query, dimension=64)
     scored_items = []
 
     for item in req.items:
-        score = cosine_similarity(query_vector, item.embedding)
+        sim = cosine_similarity(query_vector, item.embedding)
         scored_items.append({
             "id": item.id,
             "title": item.title,
             "content": item.content,
-            "score": score,
+            "similarity": round(float(sim), 4),
             "metadata": item.metadata
         })
 
-    # Sort descending by cosine similarity score
-    scored_items.sort(key=lambda x: x["score"], reverse=True)
+    scored_items.sort(key=lambda x: x["similarity"], reverse=True)
     return {
         "query": req.query,
+        "top_k": req.top_k,
         "results": scored_items[:req.top_k]
     }
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("ai_service.main:app", host="127.0.0.1", port=8100, reload=False)

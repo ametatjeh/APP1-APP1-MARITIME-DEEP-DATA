@@ -1,0 +1,17 @@
+# ==============================================================================
+# Maritime Deep Data (App 1 Only) - Laravel Scheduler Systemd Service
+# Place in: /etc/systemd/system/mdd-laravel-scheduler.service
+# ==============================================================================
+
+[Unit]
+Description=Maritime Deep Data Laravel Scheduler Run
+After=network.target postgresql.service redis.service
+
+[Service]
+Type=oneshot
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/maritime-deep-data/backend
+ExecStart=/usr/bin/php /var/www/maritime-deep-data/backend/artisan schedule:run
+StandardOutput=append:/var/log/maritime-deep-data/scheduler.log
+StandardError=append:/var/log/maritime-deep-data/scheduler_error.log
