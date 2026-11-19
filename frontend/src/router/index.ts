@@ -23,6 +23,9 @@ import PersonsView from '@/views/PersonsView.vue';
 import CrewIntelligenceView from '@/views/CrewIntelligenceView.vue';
 import IuuIntelligenceView from '@/views/IuuIntelligenceView.vue';
 import GisResearchMapView from '@/views/GisResearchMapView.vue';
+import ImportPipelinesView from '@/views/ImportPipelinesView.vue';
+import DatasetVersioningView from '@/views/DatasetVersioningView.vue';
+import DataValidationInspectorView from '@/views/DataValidationInspectorView.vue';
 import GenericPhaseView from '@/views/GenericPhaseView.vue';
 
 const router = createRouter({
@@ -63,6 +66,11 @@ const router = createRouter({
         { path: 'crew', name: 'crew', component: CrewIntelligenceView, meta: { title: 'Crew Intelligence & Forced Labour', icon: 'Anchor' } },
         { path: 'iuu', name: 'iuu', component: IuuIntelligenceView, meta: { title: 'IUU Intelligence & Sanctions', icon: 'AlertTriangle' } },
         { path: 'gis-map', name: 'gis-map', component: GisResearchMapView, meta: { title: 'GIS Research Map', icon: 'Map' } },
+
+        // Phase 4: Data Import Pipelines, Validation & Versioning
+        { path: 'imports', name: 'imports', component: ImportPipelinesView, meta: { title: 'Data Ingestion Pipelines', icon: 'Package' } },
+        { path: 'datasets/versions', name: 'dataset-versions', component: DatasetVersioningView, meta: { title: 'Dataset Versions & Snapshots', icon: 'Layers' } },
+        { path: 'validation-inspector', name: 'validation-inspector', component: DataValidationInspectorView, meta: { title: 'Data Validation Engine', icon: 'CheckSquare' } },
 
         // Modules scheduled for Phase 4-6 (Displayed with clear NGO status badge and Phase tag)
         { path: 'watchlists', name: 'watchlists', component: GenericPhaseView, props: { title: 'Watchlists & Alerts', phase: 5, description: 'Automated monitoring of target vessels, corporations, and beneficial owners.' } },

@@ -192,6 +192,51 @@
         </div>
       </div>
     </div>
+
+    <!-- Phase 4 Ingestion & Staging Operations Banner -->
+    <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-base">📦</span>
+          <h4 class="text-sm font-bold text-white">Data Ingestion Pipelines & Quarantine Staging</h4>
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950 text-cyan-300 border border-cyan-800">
+            PHASE 4 ACTIVE
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <router-link to="/validation-inspector" class="text-xs text-slate-400 hover:text-white font-mono">
+            Syntax Calculator →
+          </router-link>
+          <router-link to="/imports" class="text-xs text-cyan-400 hover:text-cyan-300 font-medium font-mono">
+            View All Batches →
+          </router-link>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
+        <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
+          <div>
+            <span class="text-slate-500 block text-[10px] uppercase">Import Pipelines</span>
+            <span class="text-lg font-bold text-white">{{ stats.imports }}</span>
+          </div>
+          <span class="text-cyan-400 text-lg">🚀</span>
+        </div>
+        <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
+          <div>
+            <span class="text-slate-500 block text-[10px] uppercase">Dataset Versions</span>
+            <span class="text-lg font-bold text-cyan-300">{{ stats.datasetVersions }}</span>
+          </div>
+          <span class="text-cyan-400 text-lg">🏷️</span>
+        </div>
+        <div class="p-3 rounded-lg bg-slate-950 border border-amber-900/60 flex items-center justify-between">
+          <div>
+            <span class="text-amber-400 block text-[10px] uppercase">Quarantined Staged</span>
+            <span class="text-lg font-bold text-amber-300">{{ stats.quarantined }}</span>
+          </div>
+          <span class="text-amber-400 text-lg">⚠️</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -213,6 +258,9 @@ const stats = ref({
   crew: 0,
   iuuListings: 0,
   researchPolygons: 0,
+  imports: 0,
+  datasetVersions: 0,
+  quarantined: 0,
 });
 
 const loading = ref(true);
@@ -225,7 +273,23 @@ const pointResult = ref<any>(null);
 async function loadDashboardData() {
   loading.value = true;
   try {
-    const [vesselsRes, companiesRes, conflictsRes, jurisdictionsRes, countriesRes, casesRes, evidencesRes, sourcesRes, queueRes, personsRes, crewRes, iuuRes, polyRes] = await Promise.all([
+    const [
+      vesselsRes,
+      companiesRes,
+      conflictsRes,
+      jurisdictionsRes,
+      countriesRes,
+      casesRes,
+      evidencesRes,
+      sourcesRes,
+      queueRes,
+      personsRes,
+      crewRes,
+      iuuRes,
+      polyRes,
+      importsRes,
+      versionsRes,
+    ] = await Promise.all([
       apiClient.get('/vessels?per_page=1').catch(() => ({ data: { total: 0 } })),
       apiClient.get('/companies?per_page=1').catch(() => ({ data: { total: 0 } })),
       apiClient.get('/identity/conflicts?per_page=5').catch(() => ({ data: { total: 0, data: [] } })),
@@ -239,7 +303,12 @@ async function loadDashboardData() {
       apiClient.get('/crew/employments?per_page=1').catch(() => ({ data: { total: 0 } })),
       apiClient.get('/iuu/listings?per_page=1').catch(() => ({ data: { total: 0 } })),
       apiClient.get('/gis/polygons?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/imports?per_page=100').catch(() => ({ data: { total: 0, data: [] } })),
+      apiClient.get('/datasets/versions?per_page=1').catch(() => ({ data: { total: 0 } })),
     ]);
+
+    const importBatches = importsRes.data.data ?? [];
+    const quarantinedCount = importBatches.reduce((acc: number, b: any) => acc + (b.quarantined_rows_count || 0), 0);
 
     stats.value = {
       vessels: vesselsRes.data.total ?? 0,
@@ -255,6 +324,9 @@ async function loadDashboardData() {
       crew: crewRes.data.total ?? 0,
       iuuListings: iuuRes.data.total ?? 0,
       researchPolygons: polyRes.data.total ?? 0,
+      imports: importsRes.data.total ?? 0,
+      datasetVersions: versionsRes.data.total ?? 0,
+      quarantined: quarantinedCount,
     };
 
     conflictsList.value = conflictsRes.data.data ?? [];

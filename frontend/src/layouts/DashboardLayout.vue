@@ -137,7 +137,7 @@
             {{ $route.meta.title || 'Intelligence Workspace' }}
           </h2>
           <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-950 border border-cyan-800/80 text-cyan-300">
-            PHASE 3 ACTIVE
+            PHASE 4 ACTIVE
           </span>
         </div>
 
@@ -197,6 +197,9 @@ const group3 = [
 const group4 = [
   { path: '/network-graph', label: '16. Network Graph', icon: '🕸️' },
   { path: '/data-sources', label: '14. Data Sources', icon: '📡', badge: 'Registry' },
+  { path: '/imports', label: '14b. Ingestion Pipelines', icon: '📦', badge: 'P4 Active' },
+  { path: '/datasets/versions', label: '14c. Dataset Versions', icon: '🏷️', badge: 'SHA-256' },
+  { path: '/validation-inspector', label: '14d. Validation Engine', icon: '🔬', badge: 'IMO/MID' },
   { path: '/ai-assistant', label: '18. AI Research Assistant', icon: '🤖', phase: 6 },
   { path: '/users', label: '19. User Management', icon: '👥' },
   { path: '/audit-logs', label: '20. Audit Logs', icon: '📜' },

@@ -4,7 +4,10 @@ use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CorporateController;
 use App\Http\Controllers\Api\v1\CountryController;
 use App\Http\Controllers\Api\v1\CrewController;
+use App\Http\Controllers\Api\v1\DataImportController;
 use App\Http\Controllers\Api\v1\DataSourceController;
+use App\Http\Controllers\Api\v1\DataValidationController;
+use App\Http\Controllers\Api\v1\DatasetVersionController;
 use App\Http\Controllers\Api\v1\EvidenceController;
 use App\Http\Controllers\Api\v1\GisResearchMapController;
 use App\Http\Controllers\Api\v1\InvestigationCaseController;
@@ -184,6 +187,29 @@ Route::prefix('v1')->group(function () {
                 ->paginate($request->input('per_page', 50));
 
             return response()->json($logs);
+        });
+
+        // 15. Data Imports & Pipelines (Phase 4)
+        Route::prefix('imports')->group(function () {
+            Route::get('/', [DataImportController::class, 'index']);
+            Route::post('/', [DataImportController::class, 'store']);
+            Route::get('/{id}', [DataImportController::class, 'show']);
+            Route::get('/{id}/quarantine', [DataImportController::class, 'quarantine']);
+            Route::post('/{id}/quarantine/{quarantineId}/resolve', [DataImportController::class, 'resolveQuarantine']);
+        });
+
+        // 16. Dataset Versioning & Provenance Snapshots (Phase 4)
+        Route::prefix('datasets/versions')->group(function () {
+            Route::get('/', [DatasetVersionController::class, 'index']);
+            Route::post('/', [DatasetVersionController::class, 'store']);
+            Route::get('/{id}', [DatasetVersionController::class, 'show']);
+            Route::put('/{id}', [DatasetVersionController::class, 'update']);
+        });
+
+        // 17. Data Validation Engine & Pre-flight Preview (Phase 4)
+        Route::prefix('validation')->group(function () {
+            Route::post('/validate-identifier', [DataValidationController::class, 'validateIdentifier']);
+            Route::post('/preview', [DataValidationController::class, 'preview']);
         });
     });
 });
