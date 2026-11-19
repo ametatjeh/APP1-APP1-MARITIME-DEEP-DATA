@@ -21,8 +21,14 @@
         >
           <span>🕸️</span> Network Canvas
         </router-link>
+        <router-link
+          to="/ai-assistant"
+          class="px-2.5 py-1 rounded bg-cyan-950 hover:bg-cyan-900 border border-cyan-700 text-cyan-300 font-mono text-xs flex items-center gap-1.5"
+        >
+          <span>🤖</span> AI Assistant
+        </router-link>
         <span class="px-2.5 py-1 rounded bg-emerald-950 border border-emerald-800/80 text-emerald-300 font-mono text-xs">
-          APP 1 STANDALONE: PHASE 5 ACTIVE
+          APP 1 STANDALONE: PHASE 6 ACTIVE
         </span>
       </div>
     </div>

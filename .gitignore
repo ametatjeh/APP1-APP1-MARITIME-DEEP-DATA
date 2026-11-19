@@ -16,3 +16,8 @@ frontend/.env.local
 .vscode/
 .idea/
 *.log
+
+# Python AI Service
+ai_service/.venv/
+__pycache__/
+*.pyc

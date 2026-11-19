@@ -143,7 +143,7 @@
             {{ $route.meta.title || 'Intelligence Workspace' }}
           </h2>
           <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-950 border border-cyan-800/80 text-cyan-300">
-            PHASE 5 ACTIVE
+            PHASE 6 ACTIVE
           </span>
         </div>
 
@@ -215,7 +215,7 @@ const group4: NavItem[] = [
   { path: '/imports', label: '14b. Ingestion Pipelines', icon: '📦', badge: 'Staging' },
   { path: '/datasets/versions', label: '14c. Dataset Versions', icon: '🏷️', badge: 'SHA-256' },
   { path: '/validation-inspector', label: '14d. Validation Engine', icon: '🔬', badge: 'IMO/MID' },
-  { path: '/ai-assistant', label: '18. AI Research Assistant', icon: '🤖', phase: 6 },
+  { path: '/ai-assistant', label: '18. AI Research Assistant', icon: '🤖', badge: 'Multi-Agent' },
   { path: '/users', label: '19. User Management', icon: '👥' },
   { path: '/audit-logs', label: '20. Audit Logs', icon: '📜' },
   { path: '/settings', label: '21. Settings', icon: '⚙️' },

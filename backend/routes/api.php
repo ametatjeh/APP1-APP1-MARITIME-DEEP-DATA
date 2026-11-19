@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\AiAssistantController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CorporateController;
 use App\Http\Controllers\Api\v1\CountryController;
@@ -243,5 +244,18 @@ Route::prefix('v1')->group(function () {
 
         // 21. Interactive Network Graph Canvas (Phase 5)
         Route::get('/network/graph', [NetworkGraphController::class, 'getGraph']);
+
+        // 22. AI Research Assistant & Multi-Agent Orchestrator (Phase 6)
+        Route::prefix('ai')->group(function () {
+            Route::get('/agents', [AiAssistantController::class, 'agents']);
+            Route::get('/conversations', [AiAssistantController::class, 'index']);
+            Route::post('/conversations', [AiAssistantController::class, 'store']);
+            Route::get('/conversations/{id}', [AiAssistantController::class, 'show']);
+            Route::delete('/conversations/{id}', [AiAssistantController::class, 'destroy']);
+            Route::post('/conversations/{id}/query', [AiAssistantController::class, 'query']);
+            Route::post('/findings/{id}/review', [AiAssistantController::class, 'reviewFinding']);
+            Route::post('/vector-sync', [AiAssistantController::class, 'vectorSync']);
+            Route::post('/vector-search', [AiAssistantController::class, 'vectorSearch']);
+        });
     });
 });

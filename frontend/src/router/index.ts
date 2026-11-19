@@ -29,6 +29,7 @@ import DataValidationInspectorView from '@/views/DataValidationInspectorView.vue
 import WatchlistsView from '@/views/WatchlistsView.vue';
 import ReportsView from '@/views/ReportsView.vue';
 import AdvancedSearchView from '@/views/AdvancedSearchView.vue';
+import AiAssistantView from '@/views/AiAssistantView.vue';
 import GenericPhaseView from '@/views/GenericPhaseView.vue';
 
 const router = createRouter({
@@ -81,7 +82,7 @@ const router = createRouter({
         { path: 'search', name: 'search', component: AdvancedSearchView, meta: { title: 'Advanced Intelligence Search', icon: 'Search' } },
 
         // Modules scheduled for Phase 6
-        { path: 'ai-assistant', name: 'ai-assistant', component: GenericPhaseView, props: { title: 'AI Research Assistant', phase: 6, description: 'Multi-Agent research orchestration, vector search, and RAG synthesis with strict evidence citations.' } },
+        { path: 'ai-assistant', name: 'ai-assistant', component: AiAssistantView, meta: { title: 'AI Research Assistant', icon: 'Bot' } },
         { path: 'users', name: 'users', component: GenericPhaseView, props: { title: 'User Management', phase: 1, description: 'Role-based access control (RBAC), country restrictions, and team assignment.' } },
         { path: 'audit-logs', name: 'audit-logs', component: GenericPhaseView, props: { title: 'Audit Trail', phase: 1, description: 'Immutable log of user actions, evidence access, and identity conflict resolutions.' } },
         { path: 'settings', name: 'settings', component: GenericPhaseView, props: { title: 'System Settings', phase: 1, description: 'System parameters, private storage keys, and PostGIS configuration.' } },
