@@ -203,7 +203,7 @@ class AiAssistantService
     protected function dispatchOrchestrator(string $prompt, array $context, string $agentMode): array
     {
         try {
-            $response = Http::timeout(4)->post("{$this->aiServiceUrl}/api/v1/orchestrate", [
+            $response = Http::connectTimeout(0.2)->timeout(1.5)->post("{$this->aiServiceUrl}/api/v1/orchestrate", [
                 'prompt' => $prompt,
                 'context' => $context,
                 'agent_mode' => $agentMode,

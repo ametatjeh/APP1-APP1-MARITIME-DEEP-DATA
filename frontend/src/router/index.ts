@@ -4,33 +4,34 @@ import { useAuthStore } from '@/stores/auth';
 import LoginView from '@/views/LoginView.vue';
 import DashboardLayout from '@/layouts/DashboardLayout.vue';
 
-import DashboardView from '@/views/DashboardView.vue';
-import VesselsView from '@/views/VesselsView.vue';
-import VesselIdentityView from '@/views/VesselIdentityView.vue';
-import CorporateView from '@/views/CorporateView.vue';
-import CountriesView from '@/views/CountriesView.vue';
-import MaritimeJurisdictionView from '@/views/MaritimeJurisdictionView.vue';
-import EezExplorerView from '@/views/EezExplorerView.vue';
-import NetworkGraphView from '@/views/NetworkGraphView.vue';
-import InvestigationsView from '@/views/InvestigationsView.vue';
-import CaseDetailView from '@/views/CaseDetailView.vue';
-import EvidenceView from '@/views/EvidenceView.vue';
-import EvidenceDetailView from '@/views/EvidenceDetailView.vue';
-import DataSourcesView from '@/views/DataSourcesView.vue';
-import VerificationWorkspaceView from '@/views/VerificationWorkspaceView.vue';
-import ChainOfCustodyView from '@/views/ChainOfCustodyView.vue';
-import PersonsView from '@/views/PersonsView.vue';
-import CrewIntelligenceView from '@/views/CrewIntelligenceView.vue';
-import IuuIntelligenceView from '@/views/IuuIntelligenceView.vue';
-import GisResearchMapView from '@/views/GisResearchMapView.vue';
-import ImportPipelinesView from '@/views/ImportPipelinesView.vue';
-import DatasetVersioningView from '@/views/DatasetVersioningView.vue';
-import DataValidationInspectorView from '@/views/DataValidationInspectorView.vue';
-import WatchlistsView from '@/views/WatchlistsView.vue';
-import ReportsView from '@/views/ReportsView.vue';
-import AdvancedSearchView from '@/views/AdvancedSearchView.vue';
-import AiAssistantView from '@/views/AiAssistantView.vue';
-import GenericPhaseView from '@/views/GenericPhaseView.vue';
+// Lazy-loaded routes for optimized bundle splitting and high-speed initial paint
+const DashboardView = () => import('@/views/DashboardView.vue');
+const VesselsView = () => import('@/views/VesselsView.vue');
+const VesselIdentityView = () => import('@/views/VesselIdentityView.vue');
+const CorporateView = () => import('@/views/CorporateView.vue');
+const CountriesView = () => import('@/views/CountriesView.vue');
+const MaritimeJurisdictionView = () => import('@/views/MaritimeJurisdictionView.vue');
+const EezExplorerView = () => import('@/views/EezExplorerView.vue');
+const NetworkGraphView = () => import('@/views/NetworkGraphView.vue');
+const InvestigationsView = () => import('@/views/InvestigationsView.vue');
+const CaseDetailView = () => import('@/views/CaseDetailView.vue');
+const EvidenceView = () => import('@/views/EvidenceView.vue');
+const EvidenceDetailView = () => import('@/views/EvidenceDetailView.vue');
+const DataSourcesView = () => import('@/views/DataSourcesView.vue');
+const VerificationWorkspaceView = () => import('@/views/VerificationWorkspaceView.vue');
+const ChainOfCustodyView = () => import('@/views/ChainOfCustodyView.vue');
+const PersonsView = () => import('@/views/PersonsView.vue');
+const CrewIntelligenceView = () => import('@/views/CrewIntelligenceView.vue');
+const IuuIntelligenceView = () => import('@/views/IuuIntelligenceView.vue');
+const GisResearchMapView = () => import('@/views/GisResearchMapView.vue');
+const ImportPipelinesView = () => import('@/views/ImportPipelinesView.vue');
+const DatasetVersioningView = () => import('@/views/DatasetVersioningView.vue');
+const DataValidationInspectorView = () => import('@/views/DataValidationInspectorView.vue');
+const WatchlistsView = () => import('@/views/WatchlistsView.vue');
+const ReportsView = () => import('@/views/ReportsView.vue');
+const AdvancedSearchView = () => import('@/views/AdvancedSearchView.vue');
+const AiAssistantView = () => import('@/views/AiAssistantView.vue');
+const GenericPhaseView = () => import('@/views/GenericPhaseView.vue');
 
 const router = createRouter({
   history: createWebHistory(),
@@ -81,7 +82,7 @@ const router = createRouter({
         { path: 'reports', name: 'reports', component: ReportsView, meta: { title: 'Dossiers & Research Reports', icon: 'FileText' } },
         { path: 'search', name: 'search', component: AdvancedSearchView, meta: { title: 'Advanced Intelligence Search', icon: 'Search' } },
 
-        // Modules scheduled for Phase 6
+        // Phase 6: AI Research Assistant & Governance
         { path: 'ai-assistant', name: 'ai-assistant', component: AiAssistantView, meta: { title: 'AI Research Assistant', icon: 'Bot' } },
         { path: 'users', name: 'users', component: GenericPhaseView, props: { title: 'User Management', phase: 1, description: 'Role-based access control (RBAC), country restrictions, and team assignment.' } },
         { path: 'audit-logs', name: 'audit-logs', component: GenericPhaseView, props: { title: 'Audit Trail', phase: 1, description: 'Immutable log of user actions, evidence access, and identity conflict resolutions.' } },

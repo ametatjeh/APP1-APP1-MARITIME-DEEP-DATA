@@ -73,6 +73,11 @@ class Company extends Model
         return $this->hasMany(CorporateRelationship::class, 'child_company_id');
     }
 
+    public function personTies()
+    {
+        return $this->hasMany(PersonCorporateTie::class);
+    }
+
     public function vesselAssignments()
     {
         return $this->hasMany(VesselCompanyAssignment::class);

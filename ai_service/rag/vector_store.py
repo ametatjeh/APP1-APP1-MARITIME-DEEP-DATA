@@ -3,35 +3,46 @@ import hashlib
 import re
 from typing import List, Dict, Any
 
-def tokenize(text: str) -> List[str]:
-    return re.findall(r'\b\w+\b', text.lower())
+STOPWORDS = {
+    'in', 'on', 'the', 'a', 'an', 'and', 'for', 'to', 'of', 'under',
+    'between', 'is', 'at', 'by', 'as', 'with', 'from', 'or', 'meeting',
+    'that', 'this', 'it', 'be', 'are', 'was', 'were'
+}
 
-def generate_embedding(text: str, dimension: int = 64) -> List[float]:
+def tokenize(text: str) -> List[str]:
+    tokens = re.findall(r'\b\w+\b', text.lower())
+    return [t for t in tokens if t not in STOPWORDS]
+
+def generate_embedding(text: str, dimension: int = 128) -> List[float]:
     """
-    Generates a normalized dense vector embedding for semantic search.
-    Employs deterministic feature hashing across unigrams and bigrams,
-    followed by L2 normalization, ensuring consistent reproducible vectors.
+    Generates an enhanced normalized dense vector embedding for maritime intelligence.
+    Employs stopword filtering, unigram + sub-word character n-grams,
+    and bigram phrase feature hashing, followed by L2 unit normalization.
     """
     vector = [0.0] * dimension
     tokens = tokenize(text)
     if not tokens:
         return vector
 
-    # Unigram features
+    # Unigram features + character n-grams for sub-word morphology
     for token in tokens:
         h = int(hashlib.sha256(token.encode('utf-8')).hexdigest(), 16)
         idx = h % dimension
-        sign = 1.0 if (h >> 8) % 2 == 0 else -1.0
-        weight = 1.0 + (len(token) * 0.1)
-        vector[idx] += sign * weight
+        weight = 1.0 + (len(token) * 0.15)
+        vector[idx] += weight
 
-    # Bigram features for contextual phrase associations
+        # Sub-word character trigrams (helps match longliner/longline, trawl/trawler)
+        for i in range(len(token) - 2):
+            sub = token[i:i+3]
+            hs = int(hashlib.sha256(sub.encode('utf-8')).hexdigest(), 16)
+            vector[hs % dimension] += 0.35
+
+    # Bigram features for contextual phrase associations (e.g. "forced_labour", "flag_convenience")
     for i in range(len(tokens) - 1):
         bigram = f"{tokens[i]}_{tokens[i+1]}"
         h = int(hashlib.sha256(bigram.encode('utf-8')).hexdigest(), 16)
         idx = h % dimension
-        sign = 1.0 if (h >> 8) % 2 == 0 else -1.0
-        vector[idx] += sign * 1.5
+        vector[idx] += 2.2
 
     # L2 Normalization
     norm = math.sqrt(sum(x * x for x in vector))

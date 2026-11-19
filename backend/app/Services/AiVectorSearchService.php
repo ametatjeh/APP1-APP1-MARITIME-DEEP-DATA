@@ -28,7 +28,7 @@ class AiVectorSearchService
     public function generateEmbedding(string $text, int $dimension = 64): array
     {
         try {
-            $response = Http::timeout(2)->post("{$this->aiServiceUrl}/api/v1/embed", [
+            $response = Http::connectTimeout(0.15)->timeout(0.5)->post("{$this->aiServiceUrl}/api/v1/embed", [
                 'text' => $text,
                 'dimension' => $dimension,
             ]);
@@ -45,21 +45,33 @@ class AiVectorSearchService
 
     public function deterministicEmbedding(string $text, int $dimension = 64): array
     {
+        $stopwords = [
+            'in', 'on', 'the', 'a', 'an', 'and', 'for', 'to', 'of', 'under',
+            'between', 'is', 'at', 'by', 'as', 'with', 'from', 'or', 'meeting',
+            'that', 'this', 'it', 'be', 'are', 'was', 'were'
+        ];
         $vector = array_fill(0, $dimension, 0.0);
         preg_match_all('/\b\w+\b/u', mb_strtolower($text), $matches);
-        $tokens = $matches[0] ?? [];
+        $rawTokens = $matches[0] ?? [];
+        $tokens = array_values(array_filter($rawTokens, fn($t) => !in_array($t, $stopwords)));
 
         if (empty($tokens)) {
             return $vector;
         }
 
-        // Unigrams
+        // Unigrams & Character trigrams
         foreach ($tokens as $token) {
             $hash = hexdec(substr(hash('sha256', $token), 0, 8));
             $idx = $hash % $dimension;
-            $sign = (($hash >> 8) % 2 === 0) ? 1.0 : -1.0;
-            $weight = 1.0 + (strlen($token) * 0.1);
-            $vector[$idx] += $sign * $weight;
+            $weight = 1.0 + (strlen($token) * 0.15);
+            $vector[$idx] += $weight;
+
+            $len = strlen($token);
+            for ($i = 0; $i < $len - 2; $i++) {
+                $sub = substr($token, $i, 3);
+                $hs = hexdec(substr(hash('sha256', $sub), 0, 8));
+                $vector[$hs % $dimension] += 0.35;
+            }
         }
 
         // Bigrams
@@ -68,8 +80,7 @@ class AiVectorSearchService
             $bigram = $tokens[$i] . '_' . $tokens[$i + 1];
             $hash = hexdec(substr(hash('sha256', $bigram), 0, 8));
             $idx = $hash % $dimension;
-            $sign = (($hash >> 8) % 2 === 0) ? 1.0 : -1.0;
-            $vector[$idx] += $sign * 1.5;
+            $vector[$idx] += 2.2;
         }
 
         // L2 Normalization

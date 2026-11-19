@@ -155,7 +155,7 @@ class NetworkGraphService
                 $this->traverseEntity('person', $pt->person->id, $depth - 1, $nodes, $edges, $visited);
             }
         } elseif ($type === 'company') {
-            $company = Company::with(['vesselAssignments.vessel', 'officers.person', 'shareholders.person', 'parentRelationships.parentCompany'])->find($id);
+            $company = Company::with(['vesselAssignments.vessel', 'personTies.person', 'parentRelationships.parentCompany'])->find($id);
             if (!$company) return;
 
             $nodes[$nodeKey] = [
@@ -180,30 +180,30 @@ class NetworkGraphService
                 $this->traverseEntity('vessel', $va->vessel->id, $depth - 1, $nodes, $edges, $visited);
             }
 
-            foreach ($company->officers as $off) {
-                if (!$off->person) continue;
-                $pKey = "person_{$off->person->id}";
-                $edgeId = "edge_off_{$off->id}";
+            foreach ($company->personTies as $pt) {
+                if (!$pt->person) continue;
+                $pKey = "person_{$pt->person->id}";
+                $edgeId = "edge_pct_{$pt->id}";
                 $edges[$edgeId] = [
                     'id' => $edgeId,
                     'from' => $pKey,
                     'to' => $nodeKey,
-                    'label' => strtoupper($this->stringify($off->title ?? $off->position, 'DIRECTOR')),
+                    'label' => strtoupper($this->stringify($pt->relationship_type, 'OFFICER')),
                 ];
-                $this->traverseEntity('person', $off->person->id, $depth - 1, $nodes, $edges, $visited);
+                $this->traverseEntity('person', $pt->person->id, $depth - 1, $nodes, $edges, $visited);
             }
 
-            foreach ($company->shareholders as $sh) {
-                if (!$sh->person) continue;
-                $pKey = "person_{$sh->person->id}";
-                $edgeId = "edge_sh_{$sh->id}";
+            foreach ($company->parentRelationships as $pr) {
+                if (!$pr->parentCompany) continue;
+                $pCompKey = "company_{$pr->parentCompany->id}";
+                $edgeId = "edge_pr_{$pr->id}";
                 $edges[$edgeId] = [
                     'id' => $edgeId,
-                    'from' => $pKey,
+                    'from' => $pCompKey,
                     'to' => $nodeKey,
-                    'label' => "SHAREHOLDER ({$sh->percentage}%)",
+                    'label' => 'PARENT_COMPANY',
                 ];
-                $this->traverseEntity('person', $sh->person->id, $depth - 1, $nodes, $edges, $visited);
+                $this->traverseEntity('company', $pr->parentCompany->id, $depth - 1, $nodes, $edges, $visited);
             }
         } elseif ($type === 'person') {
             $person = Person::with(['vesselTies.vessel', 'corporateTies.company'])->find($id);
