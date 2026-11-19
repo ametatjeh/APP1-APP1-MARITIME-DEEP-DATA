@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             RoleAndUserSeeder::class,
             CountryAndJurisdictionSeeder::class,
             VesselAndCorporateSeeder::class,
+            InvestigationAndEvidenceSeeder::class,
         ]);
     }
 }

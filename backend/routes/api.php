@@ -3,10 +3,16 @@
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CorporateController;
 use App\Http\Controllers\Api\v1\CountryController;
+use App\Http\Controllers\Api\v1\DataSourceController;
+use App\Http\Controllers\Api\v1\EvidenceController;
+use App\Http\Controllers\Api\v1\InvestigationCaseController;
 use App\Http\Controllers\Api\v1\MaritimeJurisdictionController;
+use App\Http\Controllers\Api\v1\VerificationController;
 use App\Http\Controllers\Api\v1\VesselController;
 use App\Http\Controllers\Api\v1\VesselIdentityController;
 use App\Http\Middleware\EnsureRole;
+use App\Models\AuditLog;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -83,6 +89,58 @@ Route::prefix('v1')->group(function () {
             Route::middleware(EnsureRole::class . ':super_admin,research_director')->group(function () {
                 Route::delete('/{id}', [CorporateController::class, 'destroy']);
             });
+        });
+
+        // 6. Investigation Management (Phase 2)
+        Route::prefix('cases')->group(function () {
+            Route::get('/', [InvestigationCaseController::class, 'index']);
+            Route::post('/', [InvestigationCaseController::class, 'store']);
+            Route::get('/{id}', [InvestigationCaseController::class, 'show']);
+            Route::put('/{id}', [InvestigationCaseController::class, 'update']);
+            Route::post('/{id}/assign', [InvestigationCaseController::class, 'assign']);
+            Route::post('/{id}/subjects', [InvestigationCaseController::class, 'addSubject']);
+            Route::post('/{id}/notes', [InvestigationCaseController::class, 'addNote']);
+            Route::post('/{id}/timelines', [InvestigationCaseController::class, 'addTimeline']);
+            Route::post('/{id}/status', [InvestigationCaseController::class, 'updateStatus']);
+        });
+
+        // 7. Evidence Management & Chain of Custody (Phase 2)
+        Route::prefix('evidences')->group(function () {
+            Route::get('/', [EvidenceController::class, 'index']);
+            Route::post('/', [EvidenceController::class, 'store']);
+            Route::get('/{id}', [EvidenceController::class, 'show']);
+            Route::get('/{id}/download', [EvidenceController::class, 'download']);
+            Route::post('/{id}/relationships', [EvidenceController::class, 'linkRelationship']);
+            Route::get('/{id}/custody', [EvidenceController::class, 'custodyLog']);
+        });
+
+        // 8. Verification Workflow (Phase 2)
+        Route::prefix('verification')->group(function () {
+            Route::get('/queue', [VerificationController::class, 'queue']);
+            Route::post('/review', [VerificationController::class, 'review']);
+            Route::get('/history', [VerificationController::class, 'history']);
+        });
+
+        // 9. Data Sources & Provenance (Phase 2)
+        Route::prefix('sources')->group(function () {
+            Route::get('/', [DataSourceController::class, 'index']);
+            Route::get('/{id}', [DataSourceController::class, 'show']);
+            Route::post('/', [DataSourceController::class, 'store']);
+            Route::put('/{id}', [DataSourceController::class, 'update']);
+        });
+
+        // 10. Audit Trail
+        Route::get('/audit-logs', function (Request $request) {
+            $user = $request->user();
+            if (!in_array($user->role->value, ['super_admin', 'research_director'])) {
+                return response()->json(['message' => 'Forbidden. Audit log inspection restricted.'], 403);
+            }
+
+            $logs = AuditLog::with('user')
+                ->orderByDesc('created_at')
+                ->paginate($request->input('per_page', 50));
+
+            return response()->json($logs);
         });
     });
 });

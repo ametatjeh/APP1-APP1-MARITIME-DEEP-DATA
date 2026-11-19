@@ -12,6 +12,13 @@ import CountriesView from '@/views/CountriesView.vue';
 import MaritimeJurisdictionView from '@/views/MaritimeJurisdictionView.vue';
 import EezExplorerView from '@/views/EezExplorerView.vue';
 import NetworkGraphView from '@/views/NetworkGraphView.vue';
+import InvestigationsView from '@/views/InvestigationsView.vue';
+import CaseDetailView from '@/views/CaseDetailView.vue';
+import EvidenceView from '@/views/EvidenceView.vue';
+import EvidenceDetailView from '@/views/EvidenceDetailView.vue';
+import DataSourcesView from '@/views/DataSourcesView.vue';
+import VerificationWorkspaceView from '@/views/VerificationWorkspaceView.vue';
+import ChainOfCustodyView from '@/views/ChainOfCustodyView.vue';
 import GenericPhaseView from '@/views/GenericPhaseView.vue';
 
 const router = createRouter({
@@ -38,14 +45,20 @@ const router = createRouter({
         { path: 'eez-explorer', name: 'eez-explorer', component: EezExplorerView, meta: { title: 'EEZ Explorer', icon: 'Compass' } },
         { path: 'network-graph', name: 'network-graph', component: NetworkGraphView, meta: { title: 'Network Graph Canvas', icon: 'Share2' } },
 
-        // Modules scheduled for Phase 2-6 (Displayed with clear NGO status badge and Phase tag)
+        // Phase 2: Active Core Modules
+        { path: 'investigations', name: 'investigations', component: InvestigationsView, meta: { title: 'Investigation Cases', icon: 'FolderGit2' } },
+        { path: 'investigations/:id', name: 'case-detail', component: CaseDetailView, meta: { title: 'Case Investigation Workspace', icon: 'FolderGit2' } },
+        { path: 'evidence', name: 'evidence', component: EvidenceView, meta: { title: 'Evidence Vault & Custody', icon: 'Shield' } },
+        { path: 'evidence/:id', name: 'evidence-detail', component: EvidenceDetailView, meta: { title: 'Evidence Dossier & Custody', icon: 'Shield' } },
+        { path: 'data-sources', name: 'data-sources', component: DataSourcesView, meta: { title: 'Data Sources Registry', icon: 'Database' } },
+        { path: 'verification', name: 'verification', component: VerificationWorkspaceView, meta: { title: 'Verification Queue', icon: 'CheckCircle' } },
+        { path: 'chain-of-custody', name: 'chain-of-custody', component: ChainOfCustodyView, meta: { title: 'Forensic Chain of Custody', icon: 'FileText' } },
+
+        // Modules scheduled for Phase 3-6 (Displayed with clear NGO status badge and Phase tag)
         { path: 'persons', name: 'persons', component: GenericPhaseView, props: { title: 'Persons Intelligence', phase: 3, description: 'Encrypted person profiles, intelligence links, and corporate ties.' } },
         { path: 'crew', name: 'crew', component: GenericPhaseView, props: { title: 'Crew Intelligence', phase: 3, description: 'Crew lists, sea employment history, skipper track records, and labour compliance.' } },
-        { path: 'investigations', name: 'investigations', component: GenericPhaseView, props: { title: 'Investigation Cases', phase: 2, description: 'Case subjects, timelines, hypotheses, and analytical conclusions.' } },
-        { path: 'evidence', name: 'evidence', component: GenericPhaseView, props: { title: 'Evidence Management', phase: 2, description: 'SHA-256 authenticated documents, private object storage, chain of custody.' } },
         { path: 'iuu', name: 'iuu', component: GenericPhaseView, props: { title: 'IUU Intelligence', phase: 3, description: 'Official RFMO lists, illegal fishing sanctions, and unverified allegations.' } },
         { path: 'gis-map', name: 'gis-map', component: GenericPhaseView, props: { title: 'GIS Research Map', phase: 3, description: 'Multi-layer spatial analytics, boundary overlays, and research polygons.' } },
-        { path: 'data-sources', name: 'data-sources', component: GenericPhaseView, props: { title: 'Data Sources Registry', phase: 4, description: 'Source reliability scoring, ingestion pipelines, and verification logs.' } },
         { path: 'watchlists', name: 'watchlists', component: GenericPhaseView, props: { title: 'Watchlists & Alerts', phase: 5, description: 'Automated monitoring of target vessels, corporations, and beneficial owners.' } },
         { path: 'reports', name: 'reports', component: GenericPhaseView, props: { title: 'Reports & Export', phase: 5, description: 'Evidence-linked dossier compilation, PDF export, and court-ready documentation.' } },
         { path: 'ai-assistant', name: 'ai-assistant', component: GenericPhaseView, props: { title: 'AI Research Assistant', phase: 6, description: 'Multi-Agent research orchestration, vector search, and RAG synthesis with strict evidence citations.' } },

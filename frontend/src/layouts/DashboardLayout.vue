@@ -137,7 +137,7 @@
             {{ $route.meta.title || 'Intelligence Workspace' }}
           </h2>
           <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-950 border border-cyan-800/80 text-cyan-300">
-            PHASE 1 ACTIVE
+            PHASE 2 ACTIVE
           </span>
         </div>
 
@@ -185,8 +185,10 @@ const group2 = [
 ];
 
 const group3 = [
-  { path: '/investigations', label: '10. Investigation Cases', icon: '📂', phase: 2 },
-  { path: '/evidence', label: '11. Evidence Management', icon: '🛡️', phase: 2 },
+  { path: '/investigations', label: '10. Investigation Cases', icon: '📂', badge: 'Active' },
+  { path: '/evidence', label: '11. Evidence Vault', icon: '🛡️', badge: 'SHA-256' },
+  { path: '/verification', label: '11b. Verification Queue', icon: '⚖️', badge: 'Review' },
+  { path: '/chain-of-custody', label: '11c. Chain of Custody', icon: '📜' },
   { path: '/iuu', label: '12. IUU Intelligence', icon: '🚨', phase: 3 },
   { path: '/watchlists', label: '15. Watchlists', icon: '👁️', phase: 5 },
   { path: '/reports', label: '17. Reports & Export', icon: '📑', phase: 5 },
@@ -194,7 +196,7 @@ const group3 = [
 
 const group4 = [
   { path: '/network-graph', label: '16. Network Graph', icon: '🕸️' },
-  { path: '/data-sources', label: '14. Data Sources', icon: '📡', phase: 4 },
+  { path: '/data-sources', label: '14. Data Sources', icon: '📡', badge: 'Registry' },
   { path: '/ai-assistant', label: '18. AI Research Assistant', icon: '🤖', phase: 6 },
   { path: '/users', label: '19. User Management', icon: '👥' },
   { path: '/audit-logs', label: '20. Audit Logs', icon: '📜' },

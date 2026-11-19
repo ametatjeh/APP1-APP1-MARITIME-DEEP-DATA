@@ -16,50 +16,59 @@
     </div>
 
     <!-- Quick Stats Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-      <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
-        <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
-          <span>Tracked Vessels</span>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+        <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+          <span>Vessels</span>
           <span>🚢</span>
         </div>
-        <div class="text-2xl font-bold text-white">{{ stats.vessels }}</div>
-        <div class="text-[10px] text-cyan-400 mt-1 font-mono">Verified & Disputed Records</div>
+        <div class="text-xl font-bold text-white">{{ stats.vessels }}</div>
+        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">Master Database</div>
       </div>
 
-      <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
-        <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
-          <span>Corporate Entities</span>
+      <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+        <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+          <span>Companies</span>
           <span>🏢</span>
         </div>
-        <div class="text-2xl font-bold text-white">{{ stats.companies }}</div>
-        <div class="text-[10px] text-cyan-400 mt-1 font-mono">UBOs & Operators</div>
+        <div class="text-xl font-bold text-white">{{ stats.companies }}</div>
+        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">UBOs & Operators</div>
       </div>
 
-      <div class="p-4 rounded-xl bg-slate-900 border border-amber-900/40 bg-amber-950/10">
-        <div class="flex items-center justify-between text-amber-300 text-xs mb-2">
-          <span>Identity Conflicts</span>
-          <span>⚠️</span>
+      <div class="p-3.5 rounded-xl bg-slate-900 border border-cyan-800/60 bg-cyan-950/20">
+        <div class="flex items-center justify-between text-cyan-300 text-xs mb-1">
+          <span>Active Cases</span>
+          <span>📂</span>
         </div>
-        <div class="text-2xl font-bold text-amber-300">{{ stats.conflicts }}</div>
-        <div class="text-[10px] text-amber-400/80 mt-1 font-mono">Shared MMSI / Cloned IMO</div>
+        <div class="text-xl font-bold text-cyan-300">{{ stats.cases }}</div>
+        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">Phase 2 Investigations</div>
       </div>
 
-      <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
-        <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
-          <span>Maritime Jurisdictions</span>
-          <span>🗺️</span>
+      <div class="p-3.5 rounded-xl bg-slate-900 border border-emerald-800/60 bg-emerald-950/20">
+        <div class="flex items-center justify-between text-emerald-300 text-xs mb-1">
+          <span>Vault Evidence</span>
+          <span>🛡️</span>
         </div>
-        <div class="text-2xl font-bold text-white">{{ stats.jurisdictions }}</div>
-        <div class="text-[10px] text-cyan-400 mt-1 font-mono">PostGIS Polygons</div>
+        <div class="text-xl font-bold text-emerald-300">{{ stats.evidences }}</div>
+        <div class="text-[9px] text-emerald-400 mt-0.5 font-mono">SHA-256 Authenticated</div>
       </div>
 
-      <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
-        <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
-          <span>Active Countries</span>
-          <span>🌐</span>
+      <div class="p-3.5 rounded-xl bg-slate-900 border border-purple-800/60 bg-purple-950/20">
+        <div class="flex items-center justify-between text-purple-300 text-xs mb-1">
+          <span>Pending Reviews</span>
+          <span>⚖️</span>
         </div>
-        <div class="text-2xl font-bold text-white">{{ stats.countries }}</div>
-        <div class="text-[10px] text-cyan-400 mt-1 font-mono">Multi-Country Engine</div>
+        <div class="text-xl font-bold text-purple-300">{{ stats.pendingVerifications }}</div>
+        <div class="text-[9px] text-purple-400 mt-0.5 font-mono">Verification Queue</div>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+        <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+          <span>Data Sources</span>
+          <span>📡</span>
+        </div>
+        <div class="text-xl font-bold text-white">{{ stats.sources }}</div>
+        <div class="text-[9px] text-cyan-400 mt-0.5 font-mono">Provenance Registry</div>
       </div>
     </div>
 
@@ -178,6 +187,10 @@ const stats = ref({
   conflicts: 0,
   jurisdictions: 0,
   countries: 0,
+  cases: 0,
+  evidences: 0,
+  sources: 0,
+  pendingVerifications: 0,
 });
 
 const loading = ref(true);
@@ -190,12 +203,16 @@ const pointResult = ref<any>(null);
 async function loadDashboardData() {
   loading.value = true;
   try {
-    const [vesselsRes, companiesRes, conflictsRes, jurisdictionsRes, countriesRes] = await Promise.all([
-      apiClient.get('/vessels?per_page=1'),
-      apiClient.get('/companies?per_page=1'),
-      apiClient.get('/identity/conflicts?per_page=5'),
-      apiClient.get('/jurisdictions?per_page=1'),
-      apiClient.get('/countries?per_page=1'),
+    const [vesselsRes, companiesRes, conflictsRes, jurisdictionsRes, countriesRes, casesRes, evidencesRes, sourcesRes, queueRes] = await Promise.all([
+      apiClient.get('/vessels?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/companies?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/identity/conflicts?per_page=5').catch(() => ({ data: { total: 0, data: [] } })),
+      apiClient.get('/jurisdictions?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/countries?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/cases?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/evidences?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/sources?per_page=1').catch(() => ({ data: { total: 0 } })),
+      apiClient.get('/verification/queue').catch(() => ({ data: { data: [] } })),
     ]);
 
     stats.value = {
@@ -204,6 +221,10 @@ async function loadDashboardData() {
       conflicts: conflictsRes.data.total ?? 0,
       jurisdictions: jurisdictionsRes.data.total ?? 0,
       countries: countriesRes.data.total ?? 0,
+      cases: casesRes.data.total ?? 0,
+      evidences: evidencesRes.data.total ?? 0,
+      sources: sourcesRes.data.total ?? 0,
+      pendingVerifications: queueRes.data.data?.length ?? 0,
     };
 
     conflictsList.value = conflictsRes.data.data ?? [];
